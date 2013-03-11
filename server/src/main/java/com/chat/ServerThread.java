@@ -40,7 +40,6 @@ public class ServerThread extends Thread {
     }
 
     private void processInput(String inputLine) {
-
         DataHolder.INSTANCE.addMessage(createMessage(inputLine));
     }
 

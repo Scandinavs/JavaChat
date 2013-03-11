@@ -21,7 +21,7 @@ public enum DataHolder {
 
         List<Message> messages = messagesMap.get(m.getGroupId());
         if (messages == null) {
-            messages = new ArrayList<>();
+            messages = Collections.synchronizedList(new ArrayList<Message>());
             messages.add(m);
             messagesMap.put(m.getGroupId(), messages);
         } else {
@@ -47,7 +47,7 @@ public enum DataHolder {
 
         List<Connection> connections = connectionsMap.get(c.getGroup());
         if (connections == null) {
-            connections = new ArrayList<>();
+            connections = Collections.synchronizedList(new ArrayList<Connection>());
             connections.add(c);
             connectionsMap.put(c.getGroup(), connections);
         } else {
@@ -74,5 +74,13 @@ public enum DataHolder {
 
     public List<Connection> getGroupConnections(String group) {
         return connectionsMap.get(group);
+    }
+
+    public static Map<String, List<Connection>> getConnectionsMap() {
+        return connectionsMap;
+    }
+
+    public static Map<String, List<Message>> getMessagesMap() {
+        return messagesMap;
     }
 }

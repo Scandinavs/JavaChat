@@ -1,5 +1,7 @@
 package com.chat;
 
+import org.apache.commons.lang.StringUtils;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -17,16 +19,24 @@ public class ChatClient {
             System.exit(-1);
         }
 
+        final ServerMessageHandler serverMessageHandler = new ServerMessageHandler(socket);
+        serverMessageHandler.start();
+
         String fromUser;
+        boolean listening = true;
 
         try (BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in));
              PrintWriter out = new PrintWriter(socket.getOutputStream(), true)) {
-            new ServerMessageHandler(socket).start();
-            while ((fromUser = stdIn.readLine()) != null && !fromUser.isEmpty()) {
-                out.println(fromUser);
+
+            while (listening) {
+                fromUser = stdIn.readLine();
+                if (StringUtils.isNotBlank(fromUser)) {
+                    out.println(fromUser);
+                }
             }
         }
 
+        serverMessageHandler.stopHandler();
         socket.close();
     }
 }

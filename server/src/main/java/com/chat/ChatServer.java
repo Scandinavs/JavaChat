@@ -2,8 +2,8 @@ package com.chat;
 
 import com.chat.connection.Connection;
 import com.chat.connection.SocketConnection;
-import com.chat.messagesender.DefaultMessageSender;
 import com.chat.messagesender.MessageBroker;
+import com.chat.messagesender.MessageSender;
 import org.apache.commons.io.IOUtils;
 
 import java.io.BufferedReader;
@@ -48,7 +48,7 @@ public class ChatServer {
     }
 
     private static MessageBroker startMessageBroker() {
-        MessageBroker messageBroker = new MessageBroker(new DefaultMessageSender());
+        MessageBroker messageBroker = new MessageBroker(new MessageSender());
         messageBroker.start();
         return messageBroker;
     }
