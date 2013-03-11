@@ -1,6 +1,7 @@
 package com.chat;
 
 import com.chat.connection.Connection;
+import org.apache.commons.lang.time.DateFormatUtils;
 
 import java.util.Iterator;
 import java.util.concurrent.Executors;
@@ -42,7 +43,8 @@ public class MessageBroker {
 
         private void sendMessage(Message message) {
             for (Connection connection : DataHolder.INSTANCE.getConnections()) {
-                connection.write(message);
+                String date = DateFormatUtils.format(message.date, "hh:mm:ss");
+                connection.write(String.format("|%s| %s : %s", date, message.from.getUser().getName(), message.message));
             }
         }
     }
