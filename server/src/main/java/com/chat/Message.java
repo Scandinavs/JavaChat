@@ -40,4 +40,8 @@ public class Message {
     public void setGroupId(String groupId) {
         this.groupId = groupId;
     }
+
+    public Date getDate() {
+        return date;
+    }
 }

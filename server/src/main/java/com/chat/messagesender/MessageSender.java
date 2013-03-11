@@ -9,7 +9,7 @@ import java.util.List;
 
 public abstract class MessageSender extends Thread {
 
-    {
+    public MessageSender() {
         setDaemon(true);
     }
 
