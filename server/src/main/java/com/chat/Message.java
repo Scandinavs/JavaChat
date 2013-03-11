@@ -33,14 +33,6 @@ public class Message {
         this.message = message;
     }
 
-    public Date getDate() {
-        return date;
-    }
-
-    public void setDate(Date date) {
-        this.date = date;
-    }
-
     public String getGroupId() {
         return groupId;
     }
