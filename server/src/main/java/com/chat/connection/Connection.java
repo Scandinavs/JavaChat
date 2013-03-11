@@ -1,6 +1,6 @@
 package com.chat.connection;
 
-import com.chat.User;
+import com.chat.model.User;
 
 import java.io.IOException;
 

@@ -4,6 +4,8 @@ import com.chat.connection.Connection;
 import com.chat.connection.SocketConnection;
 import com.chat.messagesender.MessageBroker;
 import com.chat.messagesender.MessageSender;
+import com.chat.model.DataHolder;
+import com.chat.model.User;
 import org.apache.commons.io.IOUtils;
 
 import java.io.BufferedReader;

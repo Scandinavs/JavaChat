@@ -1,4 +1,4 @@
-package com.chat;
+package com.chat.model;
 
 public class User {
     private String name;

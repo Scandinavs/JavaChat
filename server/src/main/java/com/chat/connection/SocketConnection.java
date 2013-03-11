@@ -1,8 +1,7 @@
 package com.chat.connection;
 
-import com.chat.DataHolder;
-import com.chat.Message;
-import com.chat.User;
+import com.chat.model.DataHolder;
+import com.chat.model.User;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.Validate;
 
@@ -11,7 +10,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.util.logging.Logger;
 
 public class SocketConnection implements Connection {
     private final User user;

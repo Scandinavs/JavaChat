@@ -1,7 +1,7 @@
 package com.chat.messagesender;
 
-import com.chat.DataHolder;
-import com.chat.Message;
+import com.chat.model.DataHolder;
+import com.chat.model.Message;
 import com.chat.connection.Connection;
 import org.apache.commons.lang.time.DateFormatUtils;
 

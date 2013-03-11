@@ -1,4 +1,4 @@
-package com.chat;
+package com.chat.model;
 
 import com.chat.connection.Connection;
 
