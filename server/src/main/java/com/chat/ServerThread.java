@@ -23,13 +23,12 @@ public class ServerThread extends Thread {
         try {
             String inputLine;
             while ((inputLine = connection.read()) != null && StringUtils.isNotEmpty(inputLine)) {
-                DataHolder.INSTANCE.addMessage(createMessage(inputLine));
+                processInput(inputLine);
             }
         } catch (SocketException e) {
             String message = "Socket exception!";
             logger.log(Level.WARNING, message, e);
         } catch (IOException e) {
-            e.printStackTrace();
             String message = "Reading error.";
             logger.log(Level.WARNING, message, e);
         } finally {
@@ -38,6 +37,11 @@ public class ServerThread extends Thread {
             connection.close();
             DataHolder.INSTANCE.removeConnection(connection);
         }
+    }
+
+    private void processInput(String inputLine) {
+
+        DataHolder.INSTANCE.addMessage(createMessage(inputLine));
     }
 
     private Message createMessage(String inputLine) {

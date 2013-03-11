@@ -7,7 +7,7 @@ import org.apache.commons.lang.Validate;
 import java.io.IOException;
 import java.util.List;
 
-public class GroupUserConnection implements Connection {
+public class GroupUserConnection {
     private final List<Connection> connections;
     private final User user;
 
@@ -28,7 +28,6 @@ public class GroupUserConnection implements Connection {
         }
     }
 
-    @Override
     public void write(Message message) {
 
     }

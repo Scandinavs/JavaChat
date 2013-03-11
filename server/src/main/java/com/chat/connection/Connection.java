@@ -1,6 +1,5 @@
 package com.chat.connection;
 
-import com.chat.Message;
 import com.chat.User;
 
 import java.io.IOException;
@@ -10,9 +9,11 @@ public interface Connection {
 
     void write(String message);
 
-    void write(Message message);
-
     void close();
 
     User getUser();
+
+    String getGroup();
+
+    void setGroup(String group);
 }

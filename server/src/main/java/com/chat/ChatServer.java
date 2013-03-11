@@ -1,14 +1,19 @@
 package com.chat;
 
 import com.chat.connection.Connection;
-import com.chat.connection.SingleUserConnection;
+import com.chat.connection.SocketConnection;
+import com.chat.messagesender.DefaultMessageSender;
+import com.chat.messagesender.MessageBroker;
+import org.apache.commons.io.IOUtils;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.logging.Level;
 import java.util.logging.Logger;
+
 
 public class ChatServer {
 
@@ -25,7 +30,7 @@ public class ChatServer {
             System.exit(-1);
         }
 
-        MessageBroker.start();
+        MessageBroker messageBroker = startMessageBroker();
         while (listening) {
             Socket socket = null;
             try {
@@ -34,32 +39,23 @@ public class ChatServer {
                 DataHolder.INSTANCE.addConnection(connection);
                 new ServerThread(connection).start();
             } catch (IOException e) {
-                e.printStackTrace();
-                logger.warning("Error creating connection!");
-                closeSocket(socket);
+                logger.log(Level.WARNING, "Error creating connection!", e);
+                IOUtils.closeQuietly(socket);
             }
         }
-        MessageBroker.stop();
-        try {
-            serverSocket.close();
-        } catch (IOException e) {
-            logger.warning("Error closing server socket connection!");
-        }
+        messageBroker.stop();
+        IOUtils.closeQuietly(serverSocket);
     }
 
-    private static void closeSocket(Socket socket) {
-        if (socket != null) {
-            try {
-                socket.close();
-            } catch (IOException e1) {
-                e1.printStackTrace();
-            }
-        }
+    private static MessageBroker startMessageBroker() {
+        MessageBroker messageBroker = new MessageBroker(new DefaultMessageSender());
+        messageBroker.start();
+        return messageBroker;
     }
 
     private static Connection createConnection(Socket socket) throws IOException {
         User user = getUser(socket);
-        return new SingleUserConnection(socket, user);
+        return new SocketConnection(socket, user);
     }
 
     private static User getUser(Socket socket) throws IOException {

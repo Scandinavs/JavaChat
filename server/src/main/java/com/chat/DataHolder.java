@@ -3,48 +3,76 @@ package com.chat;
 import com.chat.connection.Connection;
 import org.apache.commons.lang.Validate;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public enum DataHolder {
     INSTANCE;
-    private static final List<Connection> connections = Collections.synchronizedList(new ArrayList<Connection>());
-    private static final List<Message> messages = Collections.synchronizedList(new ArrayList<Message>());
+    public static final String DEFAULT_GROUP = "default";
 
-    public List<Message> getMessages() {
-        return messages;
+    private static final Map<String, List<Connection>> connectionsMap = Collections.synchronizedMap(new HashMap<String, List<Connection>>());
+    private static final Map<String, List<Message>> messagesMap = Collections.synchronizedMap(new HashMap<String, List<Message>>());
+
+    public List<Message> getDefaultGroupMessages() {
+        return messagesMap.get(DEFAULT_GROUP);
     }
 
     public void addMessage(Message m) {
         Validate.notNull(m, "Message shouldn't be null!");
 
-        messages.add(m);
+        List<Message> messages = messagesMap.get(m.groupId);
+        if (messages == null) {
+            messages = new ArrayList<>();
+            messages.add(m);
+            messagesMap.put(m.groupId, messages);
+        } else {
+            messages.add(m);
+        }
     }
 
     public void removeMessage(Message m) {
         Validate.notNull(m, "Message shouldn't be null!");
 
-        messages.remove(m);
+        List<Message> messages = messagesMap.get(m.groupId);
+        if (messages != null) {
+            messages.remove(m);
+        }
     }
 
     public void clearMessagesList() {
-        messages.clear();
+        messagesMap.clear();
     }
 
     public void addConnection(Connection c) {
         Validate.notNull(c, "Connection shouldn't be null!");
 
-        connections.add(c);
+        List<Connection> connections = connectionsMap.get(c.getGroup());
+        if (connections == null) {
+            connections = new ArrayList<>();
+            connections.add(c);
+            connectionsMap.put(c.getGroup(), connections);
+        } else {
+            connections.add(c);
+        }
     }
 
     public void removeConnection(Connection c) {
         Validate.notNull(c, "Connection shouldn't be null!");
 
-        connections.remove(c);
+        List<Connection> connections = connectionsMap.get(c.getGroup());
+        if (connections != null) {
+            connections.remove(c);
+        }
     }
 
-    public List<Connection> getConnections() {
-        return connections;
+    public List<Connection> getDefaultGroupConnections() {
+        return connectionsMap.get(DEFAULT_GROUP);
+    }
+
+    public List<Message> getGroupMessages(String group) {
+        return messagesMap.get(group);
+    }
+
+    public List<Connection> getGroupConnections(String group) {
+        return connectionsMap.get(group);
     }
 }
