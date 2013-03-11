@@ -1,37 +1,18 @@
 package com.chat.connection;
 
-import org.apache.commons.lang.Validate;
+import com.chat.Message;
+import com.chat.User;
 
-import java.io.*;
-import java.net.Socket;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.io.IOException;
 
-public class Connection {
-    private final Socket socket;
-    private final BufferedReader in;
-    private final PrintWriter out;
+public interface Connection {
+    String read() throws IOException;
 
-    private final Logger logger = Logger.getLogger("Connection");
+    void write(String message);
 
-    public Connection(Socket socket) throws IOException {
-        Validate.notNull(socket, "Socket shouldn't be null");
-        this.socket = socket;
-        this.in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-        this.out = new PrintWriter(socket.getOutputStream(), true);
-    }
+    void write(Message message);
 
-    public void write() {
+    void close();
 
-    }
-
-    public void close() {
-        try {
-            in.close();
-            out.close();
-            socket.close();
-        } catch (IOException e) {
-            logger.log(Level.WARNING, "Error closing connection!");
-        }
-    }
+    User getUser();
 }

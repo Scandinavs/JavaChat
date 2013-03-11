@@ -1,40 +1,74 @@
 package com.chat;
 
 import com.chat.connection.Connection;
+import com.chat.connection.SingleUserConnection;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.ServerSocket;
-import java.util.HashMap;
-import java.util.Map;
+import java.net.Socket;
+import java.util.logging.Logger;
 
 public class ChatServer {
 
-    public static final Map<String, Connection> connectionsMap = new HashMap<>();
+    private static final Logger logger = Logger.getLogger("ChatServer");
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         ServerSocket serverSocket = null;
+        boolean listening = true;
 
         try {
             serverSocket = new ServerSocket(4444);
         } catch (IOException e) {
-            System.err.println("Could not listen on port: 4444.");
+            logger.warning("Could not listen on port: 4444.");
             System.exit(-1);
         }
 
-//        try (Socket socket = serverSocket.accept();
-//             PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-//             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
-//
-//            String line;
-//            while ((line = in.readLine()) != null) {
-//                System.out.println(line);
-//                out.println(line + ":Server");
-//            }
-//        } finally {
-//            serverSocket.close();
-//        }
-        while (true)
-            new ServerThread(serverSocket.accept()).start();
+        MessageBroker.start();
+        while (listening) {
+            Socket socket = null;
+            try {
+                socket = serverSocket.accept();
+                Connection connection = createConnection(socket);
+                DataHolder.INSTANCE.addConnection(connection);
+                new ServerThread(connection).start();
+            } catch (IOException e) {
+                e.printStackTrace();
+                logger.warning("Error creating connection!");
+                closeSocket(socket);
+            }
+        }
+        MessageBroker.stop();
+        try {
+            serverSocket.close();
+        } catch (IOException e) {
+            logger.warning("Error closing server socket connection!");
+        }
+    }
 
+    private static void closeSocket(Socket socket) {
+        if (socket != null) {
+            try {
+                socket.close();
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
+        }
+    }
+
+    private static Connection createConnection(Socket socket) throws IOException {
+        User user = getUser(socket);
+        return new SingleUserConnection(socket, user);
+    }
+
+    private static User getUser(Socket socket) throws IOException {
+        BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+        String line;
+        if ((line = in.readLine()) != null) {
+            logger.info(String.format("User %s connected!", line));
+            return new User(line);
+        }
+        return null;
     }
 }

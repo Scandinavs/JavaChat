@@ -1,38 +1,33 @@
 package com.chat;
 
-import java.io.BufferedReader;
+import com.chat.connection.Connection;
+import org.apache.commons.lang.StringUtils;
+
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.net.Socket;
 
 public class ServerThread extends Thread {
 
-    private final Socket socket;
+    private final Connection connection;
 
-    public ServerThread(Socket socket) {
-        this.socket = socket;
+    public ServerThread(Connection connection) {
+        this.connection = connection;
     }
 
     @Override
     public void run() {
         try {
-            PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-
-            out.write("Connected");
-
-            String inputLine, outputLine;
-
-            while ((inputLine = in.readLine()) != null) {
-                outputLine = "Test";
-                out.println(outputLine + " " + inputLine);
+            String inputLine;
+            while ((inputLine = connection.read()) != null && StringUtils.isNotEmpty(inputLine)) {
+                DataHolder.INSTANCE.addMessage(createMessage(inputLine));
             }
-            out.close();
-            in.close();
-            socket.close();
         } catch (IOException e) {
             e.printStackTrace();
+        } finally {
+            connection.close();
         }
+    }
+
+    private Message createMessage(String inputLine) {
+        return new Message(connection, inputLine);
     }
 }
