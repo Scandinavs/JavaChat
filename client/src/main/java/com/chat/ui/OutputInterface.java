@@ -1,4 +1,6 @@
 package com.chat.ui;
 
-public class OutputInterface {
+public interface OutputInterface {
+
+    void write(String message);
 }

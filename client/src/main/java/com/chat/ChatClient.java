@@ -1,5 +1,6 @@
 package com.chat;
 
+import com.chat.ui.ConsoleOutput;
 import org.apache.commons.lang.StringUtils;
 
 import java.io.BufferedReader;
@@ -19,7 +20,7 @@ public class ChatClient {
             System.exit(-1);
         }
 
-        final ServerMessageHandler serverMessageHandler = new ServerMessageHandler(socket);
+        final ServerMessageHandler serverMessageHandler = new ServerMessageHandler(socket, new ConsoleOutput());
         serverMessageHandler.start();
 
         String fromUser;
