@@ -35,12 +35,12 @@ public class ServerThread extends Thread {
             String message = String.format("Closing connection for user %s!", connection.getUser().getName());
             logger.info(message);
             connection.close();
-            DataHolder.INSTANCE.removeConnection(connection);
+            DataHolder.removeConnection(connection);
         }
     }
 
     private void processInput(String inputLine) {
-        DataHolder.INSTANCE.addMessage(createMessage(inputLine));
+        DataHolder.addMessage(createMessage(inputLine));
     }
 
     private Message createMessage(String inputLine) {

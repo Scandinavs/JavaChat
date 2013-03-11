@@ -37,11 +37,11 @@ public class MessageSender extends Thread {
     }
 
     protected List<Message> getMessages() {
-        return DataHolder.INSTANCE.getGroupMessages(group);
+        return DataHolder.getGroupMessages(group);
     }
 
     protected List<Connection> getConnections() {
-        return DataHolder.INSTANCE.getGroupConnections(group);
+        return DataHolder.getGroupConnections(group);
     }
 
     private void sendMessage(Message message) {

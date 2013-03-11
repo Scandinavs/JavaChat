@@ -43,7 +43,7 @@ public class ChatServer {
         try {
             socket = serverSocket.accept();
             Connection connection = createConnection(socket);
-            DataHolder.INSTANCE.addConnection(connection);
+            DataHolder.addConnection(connection);
             new ServerThread(connection).start();
         } catch (IOException e) {
             logger.log(Level.WARNING, "Error creating connection!", e);
