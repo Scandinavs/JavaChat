@@ -32,19 +32,23 @@ public class ChatServer {
 
         MessageBroker messageBroker = startMessageBroker();
         while (listening) {
-            Socket socket = null;
-            try {
-                socket = serverSocket.accept();
-                Connection connection = createConnection(socket);
-                DataHolder.INSTANCE.addConnection(connection);
-                new ServerThread(connection).start();
-            } catch (IOException e) {
-                logger.log(Level.WARNING, "Error creating connection!", e);
-                IOUtils.closeQuietly(socket);
-            }
+            acceptConnection(serverSocket);
         }
         messageBroker.stop();
         IOUtils.closeQuietly(serverSocket);
+    }
+
+    private static void acceptConnection(ServerSocket serverSocket) {
+        Socket socket = null;
+        try {
+            socket = serverSocket.accept();
+            Connection connection = createConnection(socket);
+            DataHolder.INSTANCE.addConnection(connection);
+            new ServerThread(connection).start();
+        } catch (IOException e) {
+            logger.log(Level.WARNING, "Error creating connection!", e);
+            IOUtils.closeQuietly(socket);
+        }
     }
 
     private static MessageBroker startMessageBroker() {
