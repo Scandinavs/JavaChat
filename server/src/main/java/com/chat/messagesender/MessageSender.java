@@ -30,8 +30,8 @@ public abstract class MessageSender extends Thread {
 
     private void sendMessage(Message message) {
         for (Connection connection : getConnections()) {
-            String date = DateFormatUtils.format(message.date, "hh:mm:ss");
-            connection.write(String.format("|%s| %s : %s", date, message.from.getUser().getName(), message.message));
+            String date = DateFormatUtils.format(message.getDate(), "hh:mm:ss");
+            connection.write(String.format("|%s| %s : %s", date, message.getFrom().getUser().getName(), message.getMessage()));
         }
     }
 }

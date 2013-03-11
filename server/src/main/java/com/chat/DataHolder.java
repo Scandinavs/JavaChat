@@ -19,11 +19,11 @@ public enum DataHolder {
     public void addMessage(Message m) {
         Validate.notNull(m, "Message shouldn't be null!");
 
-        List<Message> messages = messagesMap.get(m.groupId);
+        List<Message> messages = messagesMap.get(m.getGroupId());
         if (messages == null) {
             messages = new ArrayList<>();
             messages.add(m);
-            messagesMap.put(m.groupId, messages);
+            messagesMap.put(m.getGroupId(), messages);
         } else {
             messages.add(m);
         }
@@ -32,7 +32,7 @@ public enum DataHolder {
     public void removeMessage(Message m) {
         Validate.notNull(m, "Message shouldn't be null!");
 
-        List<Message> messages = messagesMap.get(m.groupId);
+        List<Message> messages = messagesMap.get(m.getGroupId());
         if (messages != null) {
             messages.remove(m);
         }
