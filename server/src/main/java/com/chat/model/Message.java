@@ -8,13 +8,11 @@ public class Message {
     private Connection from;
     private String message;
     private Date date;
-    private String groupId;
 
     public Message(Connection from, String message) {
         this.from = from;
         this.message = message;
         this.date = new Date();
-        this.groupId = DataHolder.DEFAULT_GROUP;
     }
 
     public Connection getFrom() {
@@ -31,14 +29,6 @@ public class Message {
 
     public void setMessage(String message) {
         this.message = message;
-    }
-
-    public String getGroupId() {
-        return groupId;
-    }
-
-    public void setGroupId(String groupId) {
-        this.groupId = groupId;
     }
 
     public Date getDate() {
