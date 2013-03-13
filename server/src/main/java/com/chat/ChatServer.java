@@ -26,6 +26,8 @@ public class ChatServer {
             System.exit(-1);
         }
 
+        logger.info("Waiting for user connections...");
+
         MessageBroker messageBroker = SystemUtils.startMessageBroker();
         while (listening) {
             SystemUtils.acceptConnection(serverSocket);
