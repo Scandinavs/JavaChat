@@ -1,4 +1,4 @@
-package com.chat;
+package com.chat.handlers;
 
 import com.chat.ui.OutputInterface;
 

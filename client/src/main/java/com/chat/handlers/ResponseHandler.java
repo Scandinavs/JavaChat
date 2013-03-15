@@ -1,4 +1,4 @@
-package com.chat;
+package com.chat.handlers;
 
 import org.apache.commons.io.IOUtils;
 

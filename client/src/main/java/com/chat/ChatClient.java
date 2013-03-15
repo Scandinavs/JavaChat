@@ -1,5 +1,7 @@
 package com.chat;
 
+import com.chat.handlers.ServerMessageHandler;
+import com.chat.handlers.ServerMetaInfHandler;
 import com.chat.ui.ConsoleOutput;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;

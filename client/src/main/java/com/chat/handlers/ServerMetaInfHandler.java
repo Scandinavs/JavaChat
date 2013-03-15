@@ -1,4 +1,4 @@
-package com.chat;
+package com.chat.handlers;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -11,6 +11,8 @@ public class ServerMetaInfHandler extends ResponseHandler {
 
     @Override
     protected void processInput(String message) throws IOException {
-        if (message.equals("Connections count: 3")) {System.out.println(message);}
+        if (message.equals("Connections count: 3")) {
+            System.out.println(message);
+        }
     }
 }
