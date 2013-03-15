@@ -1,6 +1,7 @@
 package com.chat.handlers;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.log4j.Logger;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -9,6 +10,7 @@ import java.net.Socket;
 
 public abstract class ResponseHandler extends Thread {
 
+    private static Logger logger = Logger.getLogger(ResponseHandler.class);
     protected final BufferedReader in;
     private boolean listening = true;
 
@@ -20,12 +22,10 @@ public abstract class ResponseHandler extends Thread {
     public void run() {
         try {
             while (listening) {
-                if (in.ready()) {
-                    processInput(in.readLine());
-                }
+                processInput(in.readLine());
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("Error reading data.", e);
         } finally {
             IOUtils.closeQuietly(in);
         }

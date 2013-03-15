@@ -3,6 +3,7 @@ package com.chat;
 import com.chat.handlers.ServerMessageHandler;
 import com.chat.handlers.ServerMetaInfHandler;
 import com.chat.ui.ConsoleOutput;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
@@ -15,7 +16,7 @@ import java.net.Socket;
 public class ChatClient {
     private static Logger logger = Logger.getLogger(ChatClient.class);
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         Socket socket = null;
         Socket metaInfSocket = null;
 
@@ -23,15 +24,26 @@ public class ChatClient {
             socket = new Socket("SergeyKlyus-PC", 4444);
             metaInfSocket = new Socket("SergeyKlyus-PC", 4445);
         } catch (IOException e) {
-            System.err.println("Could not listen on port: 4444 or 4445.");
+            logger.error("Could not listen on port: 4444 or 4445.", e);
             System.exit(-1);
         }
 
-        final ServerMessageHandler serverMessageHandler = new ServerMessageHandler(socket, new ConsoleOutput());
-        serverMessageHandler.start();
-
-        final ServerMetaInfHandler serverMetaInfHandler = new ServerMetaInfHandler(metaInfSocket);
-        serverMetaInfHandler.start();
+        ServerMessageHandler serverMessageHandler = null;
+        try {
+            serverMessageHandler = new ServerMessageHandler(socket, new ConsoleOutput());
+            serverMessageHandler.start();
+        } catch (IOException e) {
+            logger.error("Error creating ServerMessageHandler.", e);
+            System.exit(-1);
+        }
+        ServerMetaInfHandler serverMetaInfHandler = null;
+        try {
+            serverMetaInfHandler = new ServerMetaInfHandler(metaInfSocket);
+            serverMetaInfHandler.start();
+        } catch (IOException e) {
+            logger.error("Error creating ServerMessageHandler.", e);
+            System.exit(-1);
+        }
 
         String fromUser;
         boolean listening = true;
@@ -48,9 +60,13 @@ public class ChatClient {
                     out.println(fromUser);
                 }
             }
+        } catch (IOException e) {
+            logger.error(e);
         }
 
         serverMessageHandler.stopHandler();
-        socket.close();
+        serverMetaInfHandler.stopHandler();
+        IOUtils.closeQuietly(socket);
+        IOUtils.closeQuietly(metaInfSocket);
     }
 }
