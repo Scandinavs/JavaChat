@@ -9,6 +9,10 @@ public interface Connection {
 
     void write(String message);
 
+    String readMetaInf() throws IOException;
+
+    void writeMetaInf(String message);
+
     void close();
 
     User getUser();

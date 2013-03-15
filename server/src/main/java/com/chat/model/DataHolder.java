@@ -54,4 +54,12 @@ public final class DataHolder {
     public static List<Connection> getGroupConnections(String group) {
         return connectionsMap.get(group);
     }
+
+    public static Map<String, List<Message>> getMessages() {
+        return messagesMap;
+    }
+
+    public static Map<String, List<Connection>> getConnections() {
+        return connectionsMap;
+    }
 }

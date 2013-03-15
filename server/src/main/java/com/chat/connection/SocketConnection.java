@@ -14,23 +14,28 @@ import java.net.Socket;
 public class SocketConnection implements Connection {
     private final User user;
     private final Socket socket;
+    private final Socket serviceSocket;
     private final BufferedReader in;
     private final PrintWriter out;
+    private final PrintWriter metaInfoOut;
     private String group;
 
-    public SocketConnection(Socket socket, User user, String group) throws IOException {
+    public SocketConnection(Socket socket, Socket serviceSocket, User user, String group) throws IOException {
         Validate.notNull(socket, "Socket shouldn't be null");
+        Validate.notNull(serviceSocket, "ServiceSocket shouldn't be null");
         Validate.notNull(user, "User shouldn't be null");
 
         this.socket = socket;
         this.in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         this.out = new PrintWriter(socket.getOutputStream(), true);
+        this.metaInfoOut = new PrintWriter(serviceSocket.getOutputStream(), true);
         this.user = user;
+        this.serviceSocket = serviceSocket;
         this.group = group;
     }
 
-    public SocketConnection(Socket socket, User user) throws IOException {
-        this(socket, user, DataHolder.DEFAULT_GROUP);
+    public SocketConnection(Socket socket, Socket serviceSocket, User user) throws IOException {
+        this(socket, serviceSocket, user, DataHolder.DEFAULT_GROUP);
     }
 
     @Override
@@ -54,6 +59,16 @@ public class SocketConnection implements Connection {
     }
 
     @Override
+    public String readMetaInf() throws IOException {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public void writeMetaInf(String message) {
+        metaInfoOut.println(message);
+    }
+
+    @Override
     public String read() throws IOException {
         return in.readLine();
     }
@@ -63,5 +78,6 @@ public class SocketConnection implements Connection {
         IOUtils.closeQuietly(in);
         IOUtils.closeQuietly(out);
         IOUtils.closeQuietly(socket);
+        IOUtils.closeQuietly(serviceSocket);
     }
 }

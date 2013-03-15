@@ -8,15 +8,13 @@ import org.apache.log4j.Logger;
 import java.io.IOException;
 import java.net.SocketException;
 
-public abstract class BaseServerThread extends Thread {
+public abstract class BaseProcessorThread extends Thread {
     protected static final Logger logger = Logger.getLogger("ServerThread");
 
     protected final Connection connection;
-    protected final String groupId;
 
-    public BaseServerThread(Connection connection, String groupId) {
+    public BaseProcessorThread(Connection connection) {
         this.connection = connection;
-        this.groupId = groupId;
     }
 
     @Override

@@ -4,9 +4,11 @@ import com.chat.connection.Connection;
 import com.chat.connection.SocketConnection;
 import com.chat.messagesender.MessageBroker;
 import com.chat.messagesender.MessageSender;
+import com.chat.messagesender.MetaInfoSender;
 import com.chat.model.DataHolder;
 import com.chat.model.User;
-import com.chat.processors.ServerMessageThread;
+import com.chat.processors.MessageProcessorThread;
+import com.chat.processors.MetaInfProcessorThread;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.*;
 
@@ -15,33 +17,38 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Arrays;
 
 public class SystemUtils {
 
     private static final Logger logger = Logger.getLogger(SystemUtils.class);
 
-    public static void acceptConnection(ServerSocket serverSocket) {
+    public static void acceptConnection(ServerSocket messagesSocket, ServerSocket serviceServerSocket) {
         Socket socket = null;
+        Socket serviceSocket = null;
         try {
-            socket = serverSocket.accept();
-            Connection connection = createConnection(socket);
+            socket = messagesSocket.accept();
+            serviceSocket = serviceServerSocket.accept();
+            Connection connection = createConnection(socket, serviceSocket);
             DataHolder.addConnection(connection);
-            new ServerMessageThread(connection, DataHolder.DEFAULT_GROUP).start();
+            new MessageProcessorThread(connection).start();
+            new MetaInfProcessorThread(connection).start();
         } catch (IOException e) {
             logger.error("Error creating connection!", e);
             IOUtils.closeQuietly(socket);
+            IOUtils.closeQuietly(serviceSocket);
         }
     }
 
     public static MessageBroker startMessageBroker() {
-        MessageBroker messageBroker = new MessageBroker(new MessageSender());
+        MessageBroker messageBroker = new MessageBroker(Arrays.<Runnable>asList(new MessageSender(), new MetaInfoSender()));
         messageBroker.start();
         return messageBroker;
     }
 
-    private static Connection createConnection(Socket socket) throws IOException {
-        User user = getUser(socket);
-        return new SocketConnection(socket, user);
+    private static Connection createConnection(Socket socket, Socket serviceSocket) throws IOException {
+        User user = getUser(serviceSocket);
+        return new SocketConnection(socket, serviceSocket, user);
     }
 
     private static User getUser(Socket socket) throws IOException {

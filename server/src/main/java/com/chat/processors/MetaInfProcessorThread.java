@@ -1,12 +1,11 @@
 package com.chat.processors;
 
 import com.chat.connection.Connection;
-import com.chat.model.DataHolder;
 
-public class ServiceThread extends BaseServerThread {
+public class MetaInfProcessorThread extends BaseProcessorThread {
 
-    public ServiceThread(Connection connection) {
-        super(connection, DataHolder.DEFAULT_GROUP);
+    public MetaInfProcessorThread(Connection connection) {
+        super(connection);
     }
 
     protected void processInput(String inputLine) {

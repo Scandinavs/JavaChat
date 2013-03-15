@@ -1,14 +1,13 @@
 package com.chat;
 
-import org.apache.log4j.Logger;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
 public final class SystemProperties {
 
-    private static final String PORT = "port";
+    private static final String MESSAGES_PORT = "messages.port";
+    private static final String SERVICE_PORT = "service.port";
     private static final String MAX_CONNECTIONS = "max.connections";
     private static final String KEEP_MESSAGES_COUNT = "keep.messages.count";
     private static final String LOGFILE_PATH = "logfile.path";
@@ -17,7 +16,7 @@ public final class SystemProperties {
 
     private static Properties createDefaultProperties() {
         final Properties defaultProperties = new Properties();
-        defaultProperties.put(PORT, 4444);
+        defaultProperties.put(MESSAGES_PORT, 4444);
         defaultProperties.put(MAX_CONNECTIONS, 4444);
         return defaultProperties;
     }
@@ -27,8 +26,8 @@ public final class SystemProperties {
         properties.load(inputStream);
     }
 
-    public static int getServerPort() {
-        return Integer.parseInt(properties.getProperty(PORT));
+    public static int getServicePort() {
+        return Integer.parseInt(properties.getProperty(SERVICE_PORT));
     }
 
     public static int getMaxConnections() {
@@ -41,5 +40,9 @@ public final class SystemProperties {
 
     public static String getLogfilePath() {
         return properties.getProperty(LOGFILE_PATH);
+    }
+
+    public static int getMessagesPort() {
+        return Integer.parseInt(properties.getProperty(MESSAGES_PORT));
     }
 }

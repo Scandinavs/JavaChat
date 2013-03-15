@@ -16,13 +16,16 @@ public class ChatServer {
         SystemUtils.configureLogger();
 
         ServerSocket serverSocket = null;
+        ServerSocket serverServiceSocket = null;
         boolean listening = true;
-        final int port = SystemProperties.getServerPort();
+        final int messagesPort = SystemProperties.getMessagesPort();
+        final int servicePort = SystemProperties.getServicePort();
 
         try {
-            serverSocket = new ServerSocket(port);
+            serverSocket = new ServerSocket(messagesPort);
+            serverServiceSocket = new ServerSocket(servicePort);
         } catch (IOException e) {
-            logger.error(String.format("Could not listen on port: %s.", port));
+            logger.error(String.format("Could not listen on port: %s.", messagesPort));
             System.exit(-1);
         }
 
@@ -30,7 +33,7 @@ public class ChatServer {
 
         MessageBroker messageBroker = SystemUtils.startMessageBroker();
         while (listening) {
-            SystemUtils.acceptConnection(serverSocket);
+            SystemUtils.acceptConnection(serverSocket, serverServiceSocket);
         }
         messageBroker.stop();
         IOUtils.closeQuietly(serverSocket);
