@@ -1,6 +1,6 @@
 package com.chat.messagesender;
 
-import com.chat.model.DataHolder;
+import com.chat.model.*;
 import com.chat.model.Message;
 import com.chat.connection.Connection;
 import org.apache.commons.lang.time.DateFormatUtils;
@@ -13,7 +13,7 @@ public class MessageSender extends Thread {
     private final String group;
 
     public MessageSender() {
-        this(DataHolder.DEFAULT_GROUP);
+        this(Constants.DEFAULT_GROUP);
     }
 
     public MessageSender(String group) {
@@ -51,8 +51,8 @@ public class MessageSender extends Thread {
         }
         synchronized (getConnections()) {
             for (Connection connection : connections) {
-                String date = DateFormatUtils.format(message.getDate(), "hh:mm:ss");
-                connection.write(String.format("|%s| %s : %s", date, message.getFrom().getUser().getName(), message.getMessage()));
+                String date = DateFormatUtils.format(((TextMessage)message).getDate(), "hh:mm:ss");
+                connection.writeMessage(String.format("|%s| %s : %s", date, ((TextMessage)message).getFrom().getUser().getName(), ((TextMessage)message).getMessage()));
             }
         }
     }

@@ -1,6 +1,5 @@
 package com.chat.connection;
 
-import com.chat.model.DataHolder;
 import com.chat.model.User;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.Validate;
@@ -11,16 +10,15 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
-public class SocketConnection implements Connection {
+public class UserConnection implements Connection {
     private final User user;
     private final Socket socket;
     private final Socket serviceSocket;
     private final BufferedReader in;
     private final PrintWriter out;
     private final PrintWriter metaInfoOut;
-    private String group;
 
-    public SocketConnection(Socket socket, Socket serviceSocket, User user, String group) throws IOException {
+    public UserConnection(Socket socket, Socket serviceSocket, User user) throws IOException {
         Validate.notNull(socket, "Socket shouldn't be null");
         Validate.notNull(serviceSocket, "ServiceSocket shouldn't be null");
         Validate.notNull(user, "User shouldn't be null");
@@ -31,11 +29,6 @@ public class SocketConnection implements Connection {
         this.metaInfoOut = new PrintWriter(serviceSocket.getOutputStream(), true);
         this.user = user;
         this.serviceSocket = serviceSocket;
-        this.group = group;
-    }
-
-    public SocketConnection(Socket socket, Socket serviceSocket, User user) throws IOException {
-        this(socket, serviceSocket, user, DataHolder.DEFAULT_GROUP);
     }
 
     @Override
@@ -44,23 +37,13 @@ public class SocketConnection implements Connection {
     }
 
     @Override
-    public String getGroup() {
-        return group;
-    }
-
-    @Override
-    public void setGroup(String group) {
-        this.group = group;
-    }
-
-    @Override
-    public void write(String message) {
+    public void writeMessage(String message) {
         out.println(message);
     }
 
     @Override
     public String readMetaInf() throws IOException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return null;
     }
 
     @Override
@@ -69,7 +52,7 @@ public class SocketConnection implements Connection {
     }
 
     @Override
-    public String read() throws IOException {
+    public String readMessage() throws IOException {
         return in.readLine();
     }
 

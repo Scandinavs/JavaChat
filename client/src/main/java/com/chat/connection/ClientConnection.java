@@ -1,11 +1,12 @@
-package com.chat;
+package com.chat.connection;
 
+import com.chat.model.User;
 import org.apache.commons.io.IOUtils;
 
 import java.io.*;
 import java.net.Socket;
 
-public class Connection {
+public class ClientConnection implements Connection {
     private final Socket messagesSocket;
     private final Socket metaInfSocket;
     private final BufferedReader messagesReader;
@@ -13,7 +14,7 @@ public class Connection {
     private final PrintWriter messagesWriter;
     private final PrintWriter metaInfWriter;
 
-    public Connection(String address, int messagesPort, int metaInfPort) throws IOException {
+    public ClientConnection(String address, int messagesPort, int metaInfPort) throws IOException {
         this.messagesSocket = new Socket(address, messagesPort);
         this.metaInfSocket = new Socket(address, metaInfPort);
         this.messagesReader = new BufferedReader(new InputStreamReader(messagesSocket.getInputStream()));
@@ -45,5 +46,10 @@ public class Connection {
         IOUtils.closeQuietly(metaInfReader);
         IOUtils.closeQuietly(metaInfWriter);
         IOUtils.closeQuietly(metaInfSocket);
+    }
+
+    @Override
+    public User getUser() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 }

@@ -6,8 +6,6 @@ import org.apache.commons.lang.Validate;
 import java.util.*;
 
 public final class DataHolder {
-    public static final String DEFAULT_GROUP = "default";
-
     private static final Map<String, List<Connection>> connectionsMap = Collections.synchronizedMap(new HashMap<String, List<Connection>>());
     private static final Map<String, List<Message>> messagesMap = Collections.synchronizedMap(new HashMap<String, List<Message>>());
 
@@ -25,23 +23,23 @@ public final class DataHolder {
         }
     }
 
-    public static void addConnection(Connection c) {
+    public static void addConnection(Connection c, String groupId) {
         Validate.notNull(c, "Connection shouldn't be null!");
 
-        List<Connection> connections = connectionsMap.get(c.getGroup());
+        List<Connection> connections = connectionsMap.get(groupId);
         if (connections == null) {
             connections = Collections.synchronizedList(new ArrayList<Connection>());
             connections.add(c);
-            connectionsMap.put(c.getGroup(), connections);
+            connectionsMap.put(groupId, connections);
         } else {
             connections.add(c);
         }
     }
 
-    public static void removeConnection(Connection c) {
+    public static void removeConnection(Connection c, String groupId) {
         Validate.notNull(c, "Connection shouldn't be null!");
 
-        List<Connection> connections = connectionsMap.get(c.getGroup());
+        List<Connection> connections = connectionsMap.get(groupId);
         if (connections != null) {
             connections.remove(c);
         }

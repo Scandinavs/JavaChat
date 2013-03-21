@@ -4,12 +4,12 @@ import com.chat.connection.Connection;
 
 import java.util.Date;
 
-public class Message {
+public class TextMessage implements Message {
     private Connection from;
     private String message;
     private Date date;
 
-    public Message(Connection from, String message) {
+    public TextMessage(Connection from, String message) {
         this.from = from;
         this.message = message;
         this.date = new Date();

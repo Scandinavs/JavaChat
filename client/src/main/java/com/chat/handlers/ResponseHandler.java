@@ -1,6 +1,6 @@
 package com.chat.handlers;
 
-import com.chat.Connection;
+import com.chat.connection.Connection;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;

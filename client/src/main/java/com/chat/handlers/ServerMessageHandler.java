@@ -1,10 +1,9 @@
 package com.chat.handlers;
 
-import com.chat.Connection;
+import com.chat.connection.Connection;
 import com.chat.ui.OutputInterface;
 
 import java.io.IOException;
-import java.io.InputStream;
 
 public class ServerMessageHandler extends ResponseHandler {
 

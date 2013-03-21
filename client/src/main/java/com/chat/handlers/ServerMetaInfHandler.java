@@ -1,10 +1,9 @@
 package com.chat.handlers;
 
-import com.chat.Connection;
+
+import com.chat.connection.Connection;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.Socket;
 
 public class ServerMetaInfHandler extends ResponseHandler {
 

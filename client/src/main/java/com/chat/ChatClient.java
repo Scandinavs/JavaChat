@@ -1,5 +1,7 @@
 package com.chat;
 
+import com.chat.connection.ClientConnection;
+import com.chat.connection.Connection;
 import com.chat.handlers.ServerMessageHandler;
 import com.chat.handlers.ServerMetaInfHandler;
 import com.chat.ui.ConsoleOutput;
@@ -17,7 +19,7 @@ public class ChatClient {
         configureLogger();
         Connection connection = null;
         try {
-            connection = new Connection("SergeyKlyus-PC", 4444, 4445);
+            connection = new ClientConnection("SergeyKlyus-PC", 4444, 4445);
         } catch (IOException e) {
             logger.error("Could not listen on port: 4444 or 4445.", e);
             System.exit(-1);

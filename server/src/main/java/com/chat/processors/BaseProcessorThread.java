@@ -9,19 +9,21 @@ import java.io.IOException;
 import java.net.SocketException;
 
 public abstract class BaseProcessorThread extends Thread {
-    protected static final Logger logger = Logger.getLogger("ServerThread");
+    protected final Logger logger = Logger.getLogger(this.getClass());
 
     protected final Connection connection;
+    protected String groupId;
 
-    public BaseProcessorThread(Connection connection) {
+    public BaseProcessorThread(Connection connection, String groupId) {
         this.connection = connection;
+        this.groupId = groupId;
     }
 
     @Override
     public void run() {
         try {
             String inputLine;
-            while ((inputLine = connection.read()) != null && StringUtils.isNotEmpty(inputLine)) {
+            while ((inputLine = connection.readMessage()) != null && StringUtils.isNotEmpty(inputLine)) {
                 processInput(inputLine);
             }
         } catch (SocketException e) {
@@ -34,7 +36,7 @@ public abstract class BaseProcessorThread extends Thread {
             String message = String.format("Closing connection for user %s!", connection.getUser().getName());
             logger.info(message);
             connection.close();
-            DataHolder.removeConnection(connection);
+            DataHolder.removeConnection(connection, groupId);
         }
     }
 

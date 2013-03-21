@@ -1,10 +1,11 @@
 package com.chat;
 
 import com.chat.connection.Connection;
-import com.chat.connection.SocketConnection;
+import com.chat.connection.UserConnection;
 import com.chat.messagesender.MessageBroker;
 import com.chat.messagesender.MessageSender;
 import com.chat.messagesender.MetaInfoSender;
+import com.chat.model.Constants;
 import com.chat.model.DataHolder;
 import com.chat.model.User;
 import com.chat.processors.MessageProcessorThread;
@@ -26,17 +27,21 @@ public class SystemUtils {
     public static void acceptConnection(ServerSocket messagesSocket, ServerSocket serviceServerSocket) {
         Socket socket = null;
         Socket serviceSocket = null;
+        Connection connection = null;
         try {
             socket = messagesSocket.accept();
             serviceSocket = serviceServerSocket.accept();
-            Connection connection = createConnection(socket, serviceSocket);
-            DataHolder.addConnection(connection);
-            new MessageProcessorThread(connection).start();
-            new MetaInfProcessorThread(connection).start();
+            connection = createConnection(socket, serviceSocket);
+            DataHolder.addConnection(connection, Constants.DEFAULT_GROUP);
+            new MessageProcessorThread(connection, Constants.DEFAULT_GROUP).start();
+            new MetaInfProcessorThread(connection, Constants.DEFAULT_GROUP).start();
         } catch (IOException e) {
             logger.error("Error creating connection!", e);
             IOUtils.closeQuietly(socket);
             IOUtils.closeQuietly(serviceSocket);
+            if (connection != null) {
+                DataHolder.removeConnection(connection, Constants.DEFAULT_GROUP);
+            }
         }
     }
 
@@ -48,7 +53,7 @@ public class SystemUtils {
 
     private static Connection createConnection(Socket socket, Socket serviceSocket) throws IOException {
         User user = getUser(serviceSocket);
-        return new SocketConnection(socket, serviceSocket, user);
+        return new UserConnection(socket, serviceSocket, user);
     }
 
     private static User getUser(Socket socket) throws IOException {
