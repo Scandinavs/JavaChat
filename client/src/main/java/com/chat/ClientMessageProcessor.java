@@ -25,6 +25,8 @@ public class ClientMessageProcessor implements MessageProcessor {
 
     @Override
     public void processMetaInfMessage(MetaInfMessage message) {
+        DataHolder.usersOnline.clear();
+        DataHolder.usersOnline.addAll(message.getUsersOnline());
         if (message.toString().equals("Connections count: 3")) {
             System.out.println(message);
         }

@@ -51,7 +51,9 @@ public class ChatClient {
             connection.writeMetaInf(metaInfMessage);
             while (listening) {
                 fromUser = stdIn.readLine();
-                if (StringUtils.isNotBlank(fromUser)) {
+                if(fromUser.equals("-onlineUsers")) {
+                    printOnlineUsers();
+                } else if (StringUtils.isNotBlank(fromUser)) {
                     connection.writeMessage(new TextMessage(DataHolder.currentUser, fromUser));
                 }
             }
@@ -62,6 +64,12 @@ public class ChatClient {
         serverMessageHandler.stopHandler();
         serverMetaInfHandler.stopHandler();
         connection.close();
+    }
+
+    private static void printOnlineUsers() {
+        for (User user : DataHolder.usersOnline) {
+            System.out.println("---" + user.getName() + "---");
+        }
     }
 
     public static void configureLogger() {

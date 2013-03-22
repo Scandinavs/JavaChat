@@ -8,11 +8,11 @@ import java.io.IOException;
 public interface Connection {
     Message readMessage() throws IOException;
 
-    void writeMessage(Message message);
+    void writeMessage(Message message) throws IOException;
 
     Message readMetaInf() throws IOException;
 
-    void writeMetaInf(Message message);
+    void writeMetaInf(Message message) throws IOException;
 
     void close();
 

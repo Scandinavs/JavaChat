@@ -4,12 +4,14 @@ import com.chat.connection.Connection;
 import com.chat.model.Constants;
 import com.chat.model.DataHolder;
 import com.chat.model.Message;
+import org.apache.log4j.Logger;
 
 import java.util.Iterator;
 import java.util.List;
 
 public class MessageSender extends Thread {
 
+    private static final Logger logger = Logger.getLogger(MessageSender.class);
     private final String group;
 
     public MessageSender() {
@@ -51,7 +53,11 @@ public class MessageSender extends Thread {
         }
         synchronized (getConnections()) {
             for (Connection connection : connections) {
-                connection.writeMessage(message);
+                try {
+                    connection.writeMessage(message);
+                } catch (Exception e) {
+                    logger.error(String.format("Message write error for user %s. Ignoring that.", connection.getUser().getName()));
+                }
             }
         }
     }

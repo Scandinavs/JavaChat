@@ -49,13 +49,13 @@ public class BaseConnection implements Connection {
     }
 
     @Override
-    public void writeMessage(Message message) {
-        write(message, messagesWriter);
+    public void writeMessage(Message message) throws IOException {
+        messagesWriter.writeObject(message);
     }
 
     @Override
-    public void writeMetaInf(Message message) {
-        write(message, metaInfWriter);
+    public void writeMetaInf(Message message) throws IOException {
+        metaInfWriter.writeObject(message);
     }
 
     @Override
@@ -84,14 +84,6 @@ public class BaseConnection implements Connection {
         } catch (ClassNotFoundException e) {
             logger.error("Error reading object.", e);
             return null;
-        }
-    }
-
-    private void write(Message message, ObjectOutputStream writer) {
-        try {
-            writer.writeObject(message);
-        } catch (IOException e) {
-            logger.error("Error writing object.", e);
         }
     }
 }
