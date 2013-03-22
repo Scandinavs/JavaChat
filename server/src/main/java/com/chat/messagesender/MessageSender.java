@@ -1,9 +1,9 @@
 package com.chat.messagesender;
 
-import com.chat.model.*;
-import com.chat.model.Message;
 import com.chat.connection.Connection;
-import org.apache.commons.lang.time.DateFormatUtils;
+import com.chat.model.Constants;
+import com.chat.model.DataHolder;
+import com.chat.model.Message;
 
 import java.util.Iterator;
 import java.util.List;
@@ -51,8 +51,7 @@ public class MessageSender extends Thread {
         }
         synchronized (getConnections()) {
             for (Connection connection : connections) {
-                String date = DateFormatUtils.format(((TextMessage)message).getDate(), "hh:mm:ss");
-                connection.writeMessage(String.format("|%s| %s : %s", date, ((TextMessage)message).getFrom().getUser().getName(), ((TextMessage)message).getMessage()));
+                connection.writeMessage(message);
             }
         }
     }

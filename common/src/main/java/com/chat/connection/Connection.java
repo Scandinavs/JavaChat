@@ -1,19 +1,22 @@
 package com.chat.connection;
 
+import com.chat.model.Message;
 import com.chat.model.User;
 
 import java.io.IOException;
 
 public interface Connection {
-    String readMessage() throws IOException;
+    Message readMessage() throws IOException;
 
-    void writeMessage(String message);
+    void writeMessage(Message message);
 
-    String readMetaInf() throws IOException;
+    Message readMetaInf() throws IOException;
 
-    void writeMetaInf(String message);
+    void writeMetaInf(Message message);
 
     void close();
 
     User getUser();
+
+    void setUser(User user);
 }

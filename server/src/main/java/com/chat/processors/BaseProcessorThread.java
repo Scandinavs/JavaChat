@@ -2,7 +2,7 @@ package com.chat.processors;
 
 import com.chat.connection.Connection;
 import com.chat.model.DataHolder;
-import org.apache.commons.lang.StringUtils;
+import com.chat.model.Message;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
@@ -13,18 +13,20 @@ public abstract class BaseProcessorThread extends Thread {
 
     protected final Connection connection;
     protected String groupId;
+    private ServerMessageProcessor messageProcessor;
 
     public BaseProcessorThread(Connection connection, String groupId) {
         this.connection = connection;
         this.groupId = groupId;
+        this.messageProcessor = new ServerMessageProcessor(connection, groupId);
     }
 
     @Override
     public void run() {
         try {
-            String inputLine;
-            while ((inputLine = connection.readMessage()) != null && StringUtils.isNotEmpty(inputLine)) {
-                processInput(inputLine);
+            Message message;
+            while ((message = read()) != null) {
+                message.process(messageProcessor);
             }
         } catch (SocketException e) {
             String message = "Socket exception!";
@@ -40,5 +42,5 @@ public abstract class BaseProcessorThread extends Thread {
         }
     }
 
-    protected abstract void processInput(String inputLine);
+    protected abstract Message read() throws IOException;
 }

@@ -1,7 +1,9 @@
 package com.chat.model;
 
-public class User {
-    private String name;
+import java.io.Serializable;
+
+public class User implements Serializable {
+    private final String name;
 
     public User(String name) {
         this.name = name;
@@ -9,9 +11,5 @@ public class User {
 
     public String getName() {
         return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 }

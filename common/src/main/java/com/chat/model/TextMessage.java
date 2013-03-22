@@ -1,25 +1,25 @@
 package com.chat.model;
 
-import com.chat.connection.Connection;
+import com.chat.MessageProcessor;
 
 import java.util.Date;
 
 public class TextMessage implements Message {
-    private Connection from;
+    private User from;
     private String message;
     private Date date;
 
-    public TextMessage(Connection from, String message) {
+    public TextMessage(User from, String message) {
         this.from = from;
         this.message = message;
         this.date = new Date();
     }
 
-    public Connection getFrom() {
+    public User getFrom() {
         return from;
     }
 
-    public void setFrom(Connection from) {
+    public void setFrom(User from) {
         this.from = from;
     }
 
@@ -33,5 +33,10 @@ public class TextMessage implements Message {
 
     public Date getDate() {
         return date;
+    }
+
+    @Override
+    public void process(MessageProcessor messageProcessor) {
+        messageProcessor.processTextMessage(this);
     }
 }

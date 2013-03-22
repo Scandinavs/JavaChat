@@ -1,6 +1,9 @@
 package com.chat.processors;
 
 import com.chat.connection.Connection;
+import com.chat.model.Message;
+
+import java.io.IOException;
 
 public class MetaInfProcessorThread extends BaseProcessorThread {
 
@@ -8,9 +11,8 @@ public class MetaInfProcessorThread extends BaseProcessorThread {
         super(connection, groupId);
     }
 
-    protected void processInput(String inputLine) {
-        if (inputLine.startsWith("-chat createGroup")) {
-
-        }
+    @Override
+    protected Message read() throws IOException {
+        return connection.readMetaInf();
     }
 }

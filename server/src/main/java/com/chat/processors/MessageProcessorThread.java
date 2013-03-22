@@ -1,9 +1,9 @@
 package com.chat.processors;
 
 import com.chat.connection.Connection;
-import com.chat.model.DataHolder;
 import com.chat.model.Message;
-import com.chat.model.TextMessage;
+
+import java.io.IOException;
 
 public class MessageProcessorThread extends BaseProcessorThread {
 
@@ -12,11 +12,7 @@ public class MessageProcessorThread extends BaseProcessorThread {
     }
 
     @Override
-    protected void processInput(String inputLine) {
-        DataHolder.addMessage(createMessage(inputLine), groupId);
-    }
-
-    private Message createMessage(String inputLine) {
-        return new TextMessage(connection, inputLine);
+    protected Message read() throws IOException {
+        return connection.readMessage();
     }
 }

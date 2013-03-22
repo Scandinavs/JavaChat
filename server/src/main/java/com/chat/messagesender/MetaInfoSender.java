@@ -2,6 +2,7 @@ package com.chat.messagesender;
 
 import com.chat.connection.Connection;
 import com.chat.model.DataHolder;
+import com.chat.model.MetaInfMessage;
 
 import java.util.List;
 import java.util.Map;
@@ -22,7 +23,9 @@ public class MetaInfoSender extends Thread {
 
         for (List<Connection> connectionList : connections.values()) {
             for (Connection connection : connectionList) {
-                connection.writeMetaInf("Connections count: " + String.valueOf(connectionsCount));
+                final MetaInfMessage message = new MetaInfMessage();
+                message.setDescription("Connections count: " + String.valueOf(connectionsCount));
+                connection.writeMetaInf(message);
             }
         }
     }

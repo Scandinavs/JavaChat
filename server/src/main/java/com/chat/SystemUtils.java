@@ -1,21 +1,17 @@
 package com.chat;
 
+import com.chat.connection.BaseConnection;
 import com.chat.connection.Connection;
-import com.chat.connection.UserConnection;
 import com.chat.messagesender.MessageBroker;
 import com.chat.messagesender.MessageSender;
 import com.chat.messagesender.MetaInfoSender;
-import com.chat.model.Constants;
-import com.chat.model.DataHolder;
-import com.chat.model.User;
+import com.chat.model.*;
 import com.chat.processors.MessageProcessorThread;
 import com.chat.processors.MetaInfProcessorThread;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.*;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Arrays;
@@ -52,16 +48,17 @@ public class SystemUtils {
     }
 
     private static Connection createConnection(Socket socket, Socket serviceSocket) throws IOException {
-        User user = getUser(serviceSocket);
-        return new UserConnection(socket, serviceSocket, user);
+        final Connection connection = new BaseConnection(socket, serviceSocket);
+        User user = getUser(connection);
+        connection.setUser(user);
+        return connection;
     }
 
-    private static User getUser(Socket socket) throws IOException {
-        BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-        String line;
-        if ((line = in.readLine()) != null) {
-            logger.info(String.format("User %s connected!", line));
-            return new User(line);
+    private static User getUser(Connection connection) throws IOException {
+        MetaInfMessage message;
+        if ((message = (MetaInfMessage) connection.readMetaInf()) != null) {
+            logger.info(String.format("User %s connected!", message.getCurrentUser().getName()));
+            return message.getCurrentUser();
         }
         return null;
     }

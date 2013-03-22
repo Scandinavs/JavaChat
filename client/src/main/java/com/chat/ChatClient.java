@@ -1,10 +1,12 @@
 package com.chat;
 
-import com.chat.connection.ClientConnection;
+import com.chat.connection.BaseConnection;
 import com.chat.connection.Connection;
 import com.chat.handlers.ServerMessageHandler;
 import com.chat.handlers.ServerMetaInfHandler;
-import com.chat.ui.ConsoleOutput;
+import com.chat.model.MetaInfMessage;
+import com.chat.model.TextMessage;
+import com.chat.model.User;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.*;
 
@@ -19,7 +21,7 @@ public class ChatClient {
         configureLogger();
         Connection connection = null;
         try {
-            connection = new ClientConnection("SergeyKlyus-PC", 4444, 4445);
+            connection = new BaseConnection("SergeyKlyus-PC", 4444, 4445);
         } catch (IOException e) {
             logger.error("Could not listen on port: 4444 or 4445.", e);
             System.exit(-1);
@@ -28,7 +30,7 @@ public class ChatClient {
         ServerMessageHandler serverMessageHandler = null;
         ServerMetaInfHandler serverMetaInfHandler = null;
         try {
-            serverMessageHandler = new ServerMessageHandler(connection, new ConsoleOutput());
+            serverMessageHandler = new ServerMessageHandler(connection);
             serverMessageHandler.start();
             serverMetaInfHandler = new ServerMetaInfHandler(connection);
             serverMetaInfHandler.start();
@@ -43,11 +45,14 @@ public class ChatClient {
         try (BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in))) {
             System.out.println("Type your name, please:");
             fromUser = stdIn.readLine();
-            connection.writeMetaInf(fromUser);
+            final MetaInfMessage metaInfMessage = new MetaInfMessage();
+            DataHolder.currentUser = new User(fromUser);
+            metaInfMessage.setCurrentUser(DataHolder.currentUser);
+            connection.writeMetaInf(metaInfMessage);
             while (listening) {
                 fromUser = stdIn.readLine();
                 if (StringUtils.isNotBlank(fromUser)) {
-                    connection.writeMessage(fromUser);
+                    connection.writeMessage(new TextMessage(DataHolder.currentUser, fromUser));
                 }
             }
         } catch (IOException e) {
