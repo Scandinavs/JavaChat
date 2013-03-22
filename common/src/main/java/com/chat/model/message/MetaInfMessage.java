@@ -1,16 +1,24 @@
-package com.chat.model;
+package com.chat.model.message;
 
 import com.chat.MessageProcessor;
+import com.chat.model.user.User;
 
 import java.util.List;
 import java.util.Set;
 
 public class MetaInfMessage implements Message {
-    private String status;
+    private User currentUser;
     private List<Action> actions;
     private String description;
-    private User currentUser;
+
+    /**
+     * Server side data. Shouldn't be set by the client application.
+     */
     private Set<User> usersOnline;
+
+    public MetaInfMessage(User currentUser) {
+        this.currentUser = currentUser;
+    }
 
     @Override
     public void process(MessageProcessor messageProcessor) {
@@ -39,5 +47,12 @@ public class MetaInfMessage implements Message {
 
     public void setUsersOnline(Set<User> usersOnline) {
         this.usersOnline = usersOnline;
+    }
+
+    @Override
+    public String toString() {
+        return "MetaInfMessage{" +
+                "currentUser=" + currentUser +
+                '}';
     }
 }

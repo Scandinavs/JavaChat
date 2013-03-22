@@ -1,6 +1,7 @@
 package com.chat.model;
 
 import com.chat.connection.Connection;
+import com.chat.model.message.Message;
 import org.apache.commons.lang.Validate;
 
 import java.util.*;

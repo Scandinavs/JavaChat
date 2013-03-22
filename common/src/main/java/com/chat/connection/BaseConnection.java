@@ -1,7 +1,7 @@
 package com.chat.connection;
 
-import com.chat.model.Message;
-import com.chat.model.User;
+import com.chat.model.message.Message;
+import com.chat.model.user.User;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.Validate;
 import org.apache.log4j.Logger;
@@ -14,13 +14,13 @@ import java.net.Socket;
 public class BaseConnection implements Connection {
     private final Logger logger = Logger.getLogger(this.getClass());
 
-    protected Socket messagesSocket;
-    protected Socket metaInfSocket;
-    protected ObjectInputStream messagesReader;
-    protected ObjectInputStream metaInfReader;
-    protected ObjectOutputStream messagesWriter;
-    protected ObjectOutputStream metaInfWriter;
-    protected User user;
+    private Socket messagesSocket;
+    private Socket metaInfSocket;
+    private ObjectInputStream messagesReader;
+    private ObjectInputStream metaInfReader;
+    private ObjectOutputStream messagesWriter;
+    private ObjectOutputStream metaInfWriter;
+    private User user;
 
     public BaseConnection(String address, int messagesPort, int metaInfPort) throws IOException {
         this(new Socket(address, messagesPort), new Socket(address, metaInfPort));
@@ -50,12 +50,12 @@ public class BaseConnection implements Connection {
 
     @Override
     public void writeMessage(Message message) throws IOException {
-        messagesWriter.writeObject(message);
+        write(messagesWriter, message);
     }
 
     @Override
     public void writeMetaInf(Message message) throws IOException {
-        metaInfWriter.writeObject(message);
+        write(metaInfWriter, message);
     }
 
     @Override
@@ -69,21 +69,26 @@ public class BaseConnection implements Connection {
     }
 
     @Override
-    public User getUser() {
+    public synchronized User getUser() {
         return user;
     }
 
     @Override
-    public void setUser(User user) {
+    public synchronized void setUser(User user) {
         this.user = user;
     }
 
     private Message read(ObjectInputStream reader) throws IOException {
         try {
-            return (Message) reader.readObject();
+            return (Message) reader.readUnshared();
         } catch (ClassNotFoundException e) {
             logger.error("Error reading object.", e);
             return null;
         }
+    }
+
+    private void write(ObjectOutputStream writer, Message message) throws IOException {
+        writer.reset();
+        writer.writeUnshared(message);
     }
 }

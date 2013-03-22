@@ -4,9 +4,10 @@ import com.chat.connection.BaseConnection;
 import com.chat.connection.Connection;
 import com.chat.handlers.ServerMessageHandler;
 import com.chat.handlers.ServerMetaInfHandler;
-import com.chat.model.MetaInfMessage;
-import com.chat.model.TextMessage;
-import com.chat.model.User;
+import com.chat.model.message.MetaInfMessage;
+import com.chat.model.message.TextMessage;
+import com.chat.model.user.User;
+import com.chat.model.user.UserStatus;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.*;
 
@@ -45,16 +46,16 @@ public class ChatClient {
         try (BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in))) {
             System.out.println("Type your name, please:");
             fromUser = stdIn.readLine();
-            final MetaInfMessage metaInfMessage = new MetaInfMessage();
-            DataHolder.currentUser = new User(fromUser);
-            metaInfMessage.setCurrentUser(DataHolder.currentUser);
-            connection.writeMetaInf(metaInfMessage);
+            DataHolder.setCurrentUser(new User(fromUser));
+            connection.writeMetaInf(new MetaInfMessage(DataHolder.getCurrentUser()));
             while (listening) {
                 fromUser = stdIn.readLine();
-                if(fromUser.equals("-onlineUsers")) {
+                if (fromUser.equals("-onlineUsers")) {
                     printOnlineUsers();
+                } else if (fromUser.startsWith("-status ")) {
+                    changeStatus(connection, fromUser);
                 } else if (StringUtils.isNotBlank(fromUser)) {
-                    connection.writeMessage(new TextMessage(DataHolder.currentUser, fromUser));
+                    connection.writeMessage(new TextMessage(DataHolder.getCurrentUser(), fromUser));
                 }
             }
         } catch (IOException e) {
@@ -66,9 +67,18 @@ public class ChatClient {
         connection.close();
     }
 
+    private static void changeStatus(Connection connection, String fromUser) throws IOException {
+        String status = fromUser.substring(8);
+        final UserStatus userStatus = UserStatus.getUserStatus(status);
+        if (userStatus != null) {
+            DataHolder.getCurrentUser().setStatus(userStatus);
+            connection.writeMetaInf(new MetaInfMessage(DataHolder.getCurrentUser()));
+        }
+    }
+
     private static void printOnlineUsers() {
-        for (User user : DataHolder.usersOnline) {
-            System.out.println("---" + user.getName() + "---");
+        for (User user : DataHolder.getUsersOnline()) {
+            System.out.println(String.format("---%s(%s)---", user.getName(), user.getStatus().getStatus()));
         }
     }
 

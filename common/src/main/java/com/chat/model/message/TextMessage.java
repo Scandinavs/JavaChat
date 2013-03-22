@@ -1,6 +1,7 @@
-package com.chat.model;
+package com.chat.model.message;
 
 import com.chat.MessageProcessor;
+import com.chat.model.user.User;
 
 import java.util.Date;
 

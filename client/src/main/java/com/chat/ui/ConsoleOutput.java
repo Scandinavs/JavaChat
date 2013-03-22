@@ -1,6 +1,6 @@
 package com.chat.ui;
 
-import com.chat.model.TextMessage;
+import com.chat.model.message.TextMessage;
 import org.apache.commons.lang.time.DateFormatUtils;
 
 public class ConsoleOutput implements OutputInterface {

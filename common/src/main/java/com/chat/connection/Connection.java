@@ -1,7 +1,7 @@
 package com.chat.connection;
 
-import com.chat.model.Message;
-import com.chat.model.User;
+import com.chat.model.message.Message;
+import com.chat.model.user.User;
 
 import java.io.IOException;
 

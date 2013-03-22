@@ -2,8 +2,8 @@ package com.chat.messagesender;
 
 import com.chat.connection.Connection;
 import com.chat.model.DataHolder;
-import com.chat.model.MetaInfMessage;
-import com.chat.model.User;
+import com.chat.model.message.MetaInfMessage;
+import com.chat.model.user.User;
 import org.apache.log4j.Logger;
 
 import java.util.*;
@@ -24,7 +24,7 @@ public class MetaInfoSender extends Thread {
             int connectionsCount = connectionList.size();
             for (Connection connection : connectionList) {
                 try {
-                    final MetaInfMessage message = new MetaInfMessage();
+                    final MetaInfMessage message = new MetaInfMessage(connection.getUser());
                     message.setDescription("Connections count: " + String.valueOf(connectionsCount));
                     message.setUsersOnline(usersOnline);
                     connection.writeMetaInf(message);

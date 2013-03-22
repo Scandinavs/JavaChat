@@ -1,6 +1,6 @@
 package com.chat.ui;
 
-import com.chat.model.TextMessage;
+import com.chat.model.message.TextMessage;
 
 public interface OutputInterface {
 

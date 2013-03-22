@@ -2,7 +2,7 @@ package com.chat.handlers;
 
 import com.chat.ClientMessageProcessor;
 import com.chat.connection.Connection;
-import com.chat.model.Message;
+import com.chat.model.message.Message;
 import com.chat.ui.ConsoleOutput;
 import org.apache.log4j.Logger;
 

@@ -1,9 +1,6 @@
-package com.chat.model;
+package com.chat.model.message;
 
 import com.chat.MessageProcessor;
-import com.chat.connection.Connection;
-
-import java.util.Date;
 
 public class FileMessage implements Message {
     @Override

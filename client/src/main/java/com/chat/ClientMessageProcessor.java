@@ -1,8 +1,8 @@
 package com.chat;
 
-import com.chat.model.FileMessage;
-import com.chat.model.MetaInfMessage;
-import com.chat.model.TextMessage;
+import com.chat.model.message.FileMessage;
+import com.chat.model.message.MetaInfMessage;
+import com.chat.model.message.TextMessage;
 import com.chat.ui.OutputInterface;
 
 public class ClientMessageProcessor implements MessageProcessor {
@@ -25,8 +25,8 @@ public class ClientMessageProcessor implements MessageProcessor {
 
     @Override
     public void processMetaInfMessage(MetaInfMessage message) {
-        DataHolder.usersOnline.clear();
-        DataHolder.usersOnline.addAll(message.getUsersOnline());
+        DataHolder.getUsersOnline().clear();
+        DataHolder.getUsersOnline().addAll(message.getUsersOnline());
         if (message.toString().equals("Connections count: 3")) {
             System.out.println(message);
         }

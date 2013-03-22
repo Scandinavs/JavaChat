@@ -1,8 +1,8 @@
 package com.chat;
 
-import com.chat.model.FileMessage;
-import com.chat.model.MetaInfMessage;
-import com.chat.model.TextMessage;
+import com.chat.model.message.FileMessage;
+import com.chat.model.message.MetaInfMessage;
+import com.chat.model.message.TextMessage;
 
 public interface MessageProcessor {
     void processTextMessage(TextMessage message);

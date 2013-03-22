@@ -1,4 +1,4 @@
-package com.chat.model;
+package com.chat.model.message;
 
 import com.chat.MessageProcessor;
 

@@ -6,6 +6,8 @@ import com.chat.messagesender.MessageBroker;
 import com.chat.messagesender.MessageSender;
 import com.chat.messagesender.MetaInfoSender;
 import com.chat.model.*;
+import com.chat.model.message.MetaInfMessage;
+import com.chat.model.user.User;
 import com.chat.processors.MessageProcessorThread;
 import com.chat.processors.MetaInfProcessorThread;
 import org.apache.commons.io.IOUtils;

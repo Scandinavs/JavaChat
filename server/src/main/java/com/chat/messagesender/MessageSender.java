@@ -3,7 +3,7 @@ package com.chat.messagesender;
 import com.chat.connection.Connection;
 import com.chat.model.Constants;
 import com.chat.model.DataHolder;
-import com.chat.model.Message;
+import com.chat.model.message.Message;
 import org.apache.log4j.Logger;
 
 import java.util.Iterator;
