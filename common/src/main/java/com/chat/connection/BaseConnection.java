@@ -15,27 +15,20 @@ public class BaseConnection implements Connection {
     private final Logger logger = Logger.getLogger(this.getClass());
 
     private Socket messagesSocket;
-    private Socket metaInfSocket;
     private ObjectInputStream messagesReader;
-    private ObjectInputStream metaInfReader;
     private ObjectOutputStream messagesWriter;
-    private ObjectOutputStream metaInfWriter;
     private User user;
 
-    public BaseConnection(String address, int messagesPort, int metaInfPort) throws IOException {
-        this(new Socket(address, messagesPort), new Socket(address, metaInfPort));
+    public BaseConnection(String address, int messagesPort) throws IOException {
+        this(new Socket(address, messagesPort));
     }
 
-    public BaseConnection(Socket messagesSocket, Socket metaInfSocket) throws IOException {
+    public BaseConnection(Socket messagesSocket) throws IOException {
         Validate.notNull(messagesSocket, "MessagesSocket shouldn't be null");
-        Validate.notNull(metaInfSocket, "MetaInfSocket shouldn't be null");
 
         this.messagesSocket = messagesSocket;
-        this.metaInfSocket = metaInfSocket;
         this.messagesWriter = new ObjectOutputStream(messagesSocket.getOutputStream());
-        this.metaInfWriter = new ObjectOutputStream(metaInfSocket.getOutputStream());
         this.messagesReader = new ObjectInputStream(messagesSocket.getInputStream());
-        this.metaInfReader = new ObjectInputStream(metaInfSocket.getInputStream());
     }
 
     @Override
@@ -44,28 +37,15 @@ public class BaseConnection implements Connection {
     }
 
     @Override
-    public Message readMetaInf() throws IOException {
-        return read(metaInfReader);
-    }
-
-    @Override
     public void writeMessage(Message message) throws IOException {
         write(messagesWriter, message);
     }
 
     @Override
-    public void writeMetaInf(Message message) throws IOException {
-        write(metaInfWriter, message);
-    }
-
-    @Override
     public void close() {
         IOUtils.closeQuietly(messagesSocket);
-        IOUtils.closeQuietly(metaInfSocket);
         IOUtils.closeQuietly(messagesReader);
         IOUtils.closeQuietly(messagesWriter);
-        IOUtils.closeQuietly(metaInfReader);
-        IOUtils.closeQuietly(metaInfWriter);
     }
 
     @Override

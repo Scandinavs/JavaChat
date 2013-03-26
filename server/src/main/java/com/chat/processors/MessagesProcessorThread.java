@@ -8,14 +8,14 @@ import org.apache.log4j.Logger;
 import java.io.IOException;
 import java.net.SocketException;
 
-public abstract class BaseProcessorThread extends Thread {
+public class MessagesProcessorThread extends Thread {
     protected final Logger logger = Logger.getLogger(this.getClass());
 
     protected final Connection connection;
     protected String groupId;
     private ServerMessageProcessor messageProcessor;
 
-    public BaseProcessorThread(Connection connection, String groupId) {
+    public MessagesProcessorThread(Connection connection, String groupId) {
         this.connection = connection;
         this.groupId = groupId;
         this.messageProcessor = new ServerMessageProcessor(connection, groupId);
@@ -25,7 +25,7 @@ public abstract class BaseProcessorThread extends Thread {
     public void run() {
         try {
             Message message;
-            while ((message = read()) != null) {
+            while ((message = connection.readMessage()) != null) {
                 message.process(messageProcessor);
             }
         } catch (SocketException e) {
@@ -41,6 +41,4 @@ public abstract class BaseProcessorThread extends Thread {
             DataHolder.removeConnection(connection, groupId);
         }
     }
-
-    protected abstract Message read() throws IOException;
 }

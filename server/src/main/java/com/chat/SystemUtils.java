@@ -8,8 +8,7 @@ import com.chat.messagesender.MetaInfoSender;
 import com.chat.model.*;
 import com.chat.model.message.MetaInfMessage;
 import com.chat.model.user.User;
-import com.chat.processors.MessageProcessorThread;
-import com.chat.processors.MetaInfProcessorThread;
+import com.chat.processors.MessagesProcessorThread;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.*;
 
@@ -22,21 +21,17 @@ public class SystemUtils {
 
     private static final Logger logger = Logger.getLogger(SystemUtils.class);
 
-    public static void acceptConnection(ServerSocket messagesSocket, ServerSocket serviceServerSocket) {
+    public static void acceptConnection(ServerSocket messagesSocket) {
         Socket socket = null;
-        Socket serviceSocket = null;
         Connection connection = null;
         try {
             socket = messagesSocket.accept();
-            serviceSocket = serviceServerSocket.accept();
-            connection = createConnection(socket, serviceSocket);
+            connection = createConnection(socket);
             DataHolder.addConnection(connection, Constants.DEFAULT_GROUP);
-            new MessageProcessorThread(connection, Constants.DEFAULT_GROUP).start();
-            new MetaInfProcessorThread(connection, Constants.DEFAULT_GROUP).start();
+            new MessagesProcessorThread(connection, Constants.DEFAULT_GROUP).start();
         } catch (IOException e) {
             logger.error("Error creating connection!", e);
             IOUtils.closeQuietly(socket);
-            IOUtils.closeQuietly(serviceSocket);
             if (connection != null) {
                 DataHolder.removeConnection(connection, Constants.DEFAULT_GROUP);
             }
@@ -49,8 +44,8 @@ public class SystemUtils {
         return messageBroker;
     }
 
-    private static Connection createConnection(Socket socket, Socket serviceSocket) throws IOException {
-        final Connection connection = new BaseConnection(socket, serviceSocket);
+    private static Connection createConnection(Socket socket) throws IOException {
+        final Connection connection = new BaseConnection(socket);
         User user = getUser(connection);
         connection.setUser(user);
         return connection;
@@ -58,7 +53,7 @@ public class SystemUtils {
 
     private static User getUser(Connection connection) throws IOException {
         MetaInfMessage message;
-        if ((message = (MetaInfMessage) connection.readMetaInf()) != null) {
+        if ((message = (MetaInfMessage) connection.readMessage()) != null) {
             logger.info(String.format("User %s connected!", message.getCurrentUser().getName()));
             return message.getCurrentUser();
         }

@@ -21,7 +21,6 @@ public class ServerMessageProcessor implements MessageProcessor {
 
     @Override
     public void processTextMessage(TextMessage message) {
-//        message.setFrom(connection.getUser());
         DataHolder.addMessage(message, groupId);
     }
 

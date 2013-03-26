@@ -2,8 +2,7 @@ package com.chat;
 
 import com.chat.connection.BaseConnection;
 import com.chat.connection.Connection;
-import com.chat.handlers.ServerMessageHandler;
-import com.chat.handlers.ServerMetaInfHandler;
+import com.chat.handlers.MessageHandler;
 import com.chat.model.message.MetaInfMessage;
 import com.chat.model.message.TextMessage;
 import com.chat.model.user.User;
@@ -22,19 +21,16 @@ public class ChatClient {
         configureLogger();
         Connection connection = null;
         try {
-            connection = new BaseConnection("SergeyKlyus-PC", 4444, 4445);
+            connection = new BaseConnection("SergeyKlyus-PC", 4444);
         } catch (IOException e) {
             logger.error("Could not listen on port: 4444 or 4445.", e);
             System.exit(-1);
         }
 
-        ServerMessageHandler serverMessageHandler = null;
-        ServerMetaInfHandler serverMetaInfHandler = null;
+        MessageHandler serverMessageHandler = null;
         try {
-            serverMessageHandler = new ServerMessageHandler(connection);
+            serverMessageHandler = new MessageHandler(connection);
             serverMessageHandler.start();
-            serverMetaInfHandler = new ServerMetaInfHandler(connection);
-            serverMetaInfHandler.start();
         } catch (IOException e) {
             logger.error("Error creating ServerMessageHandler or ServerMessageHandler.", e);
             System.exit(-1);
@@ -47,7 +43,7 @@ public class ChatClient {
             System.out.println("Type your name, please:");
             fromUser = stdIn.readLine();
             DataHolder.setCurrentUser(new User(fromUser));
-            connection.writeMetaInf(new MetaInfMessage(DataHolder.getCurrentUser()));
+            connection.writeMessage(new MetaInfMessage(DataHolder.getCurrentUser()));
             while (listening) {
                 fromUser = stdIn.readLine();
                 if (fromUser.equals("-onlineUsers")) {
@@ -63,7 +59,6 @@ public class ChatClient {
         }
 
         serverMessageHandler.stopHandler();
-        serverMetaInfHandler.stopHandler();
         connection.close();
     }
 
@@ -72,7 +67,7 @@ public class ChatClient {
         final UserStatus userStatus = UserStatus.getUserStatus(status);
         if (userStatus != null) {
             DataHolder.getCurrentUser().setStatus(userStatus);
-            connection.writeMetaInf(new MetaInfMessage(DataHolder.getCurrentUser()));
+            connection.writeMessage(new MetaInfMessage(DataHolder.getCurrentUser()));
         }
     }
 

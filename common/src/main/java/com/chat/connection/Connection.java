@@ -10,10 +10,6 @@ public interface Connection {
 
     void writeMessage(Message message) throws IOException;
 
-    Message readMetaInf() throws IOException;
-
-    void writeMetaInf(Message message) throws IOException;
-
     void close();
 
     User getUser();

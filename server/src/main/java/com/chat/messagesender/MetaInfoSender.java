@@ -27,7 +27,7 @@ public class MetaInfoSender extends Thread {
                     final MetaInfMessage message = new MetaInfMessage(connection.getUser());
                     message.setDescription("Connections count: " + String.valueOf(connectionsCount));
                     message.setUsersOnline(usersOnline);
-                    connection.writeMetaInf(message);
+                    connection.writeMessage(message);
                 } catch (Exception e) {
                     logger.error(String.format("Message write error for user %s. Ignoring that.", connection.getUser().getName()));
                 }
